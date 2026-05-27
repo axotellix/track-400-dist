@@ -30,7 +30,6 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
-            
             background-image: radial-gradient(ellipse 70% 50% at 50% -20%, rgba(150, 20, 20, 0.12), transparent);
         }
 
@@ -85,25 +84,24 @@
 
         .center-display {
             position: absolute;
-            top: 43%; /* Сдвинуто чуть выше для визуального центра */
+            top: 43%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: var(--panel-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px; /* Скругление 18px (было 20) */
-            padding: 25px 40px; /* Слегка уменьшен внутренний отступ */
+            border-radius: 14px;
+            padding: 20px 30px; 
             text-align: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
             pointer-events: none;
             transition: all 0.3s ease;
         }
 
-        /* Уменьшены размеры шрифтов в плашке */
-        .center-display .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-        .center-display .distance { font-size: 32px; font-weight: 700; color: rgba(255, 255, 255, 0.95); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 6px; text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); transition: font-size 0.3s; }
-        .center-display .hint { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+        .center-display .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .center-display .distance { font-size: 28px; font-weight: 700; color: rgba(255, 255, 255, 0.95); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 4px; text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); transition: font-size 0.3s; }
+        .center-display .hint { font-size: 11px; color: var(--text-muted); font-weight: 400; }
 
         .bottom-ui-container {
             position: absolute;
@@ -127,9 +125,10 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
             box-sizing: border-box;
+            border-radius: 14px; 
         }
 
-        .calc-panel { border-radius: 14px; /* Скругление 14px (было 16) */ padding: 16px 24px; flex-direction: row; align-items: center; gap: 24px; width: 100%; }
+        .calc-panel { padding: 16px 24px; flex-direction: row; align-items: center; gap: 24px; width: 100%; }
         .calc-group { display: flex; flex-direction: column; gap: 8px; }
         .calc-group label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
 
@@ -156,10 +155,7 @@
 
         .input-dist { width: 80px; }
         .time-inputs { display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-weight: 600; }
-        
-        /* Ширина полей времени уравнена */
         .input-min, .input-sec, .input-ms { width: 45px; }
-
         .calc-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.1); }
         .calc-result { font-size: 20px; font-weight: 700; color: var(--track-highlight); font-variant-numeric: tabular-nums; height: 40px; display: flex; align-items: center; text-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
 
@@ -168,29 +164,51 @@
         .slider-panel span { color: white; font-variant-numeric: tabular-nums; }
         .slider-panel input[type="range"] { width: 150px; margin: 0; accent-color: var(--track-highlight); cursor: pointer; height: 20px; }
 
-        #tooltip { position: absolute; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; pointer-events: none; opacity: 0; transform: translate(-50%, -150%); transition: opacity 0.2s; backdrop-filter: blur(4px); }
+        #tooltip { position: absolute; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; pointer-events: none; opacity: 0; transform: translate(-50%, -150%); transition: opacity 0.2s; backdrop-filter: blur(4px); z-index: 20; }
 
         /* === АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ === */
         @media (max-width: 850px) {
+            body { 
+                overflow-y: auto; 
+                overflow-x: hidden; 
+                height: auto; 
+                min-height: 100vh; 
+            }
+            
+            .container {
+                justify-content: flex-start;
+                height: auto;
+                min-height: 100vh;
+                padding-top: 5vh; 
+                padding-bottom: 60px; 
+            }
+
             svg {
-                transform: scale(1.1) translateY(-18%); /* Стадион стал крупнее на мобилках */
-                max-height: 55vh;
+                margin-top: 20%;
+                transform: scale(1.1); 
+                max-height: 45vh; 
+                flex-shrink: 0;
             }
             
             .center-display {
-                top: 12%; /* Плашка перенесена наверх */
-                padding: 12px 20px;
+                top: 4%; 
+                transform: translateX(-50%); 
+                padding: 10px 18px;
                 width: auto;
-                min-width: 160px;
+                min-width: 140px;
+                border-radius: 14px;
             }
             
-            /* На мобильных шрифты еще чуть меньше для компактности */
-            .center-display .distance { font-size: 26px; margin-bottom: 2px; }
-            .center-display .hint { font-size: 11px; }
+            .center-display .distance { font-size: 24px; margin-bottom: 2px; }
+            .center-display .hint { font-size: 10px; }
             .center-display .label { font-size: 10px; }
 
             .bottom-ui-container {
-                bottom: 15px;
+                position: relative;
+                bottom: auto;
+                left: 0;
+                transform: none;
+                margin-top: 35px; 
                 width: 92vw;
             }
 
@@ -199,6 +217,7 @@
                 gap: 12px;
                 padding: 16px;
                 align-items: stretch; 
+                border-radius: 14px;
             }
 
             .calc-group {
@@ -209,20 +228,14 @@
             }
 
             .calc-divider { width: 100%; height: 1px; margin: 4px 0; }
-
-            .input-dist, .time-inputs {
-                width: 60%; 
-                justify-content: flex-end;
-            }
+            .input-dist, .time-inputs { width: 60%; justify-content: flex-end; }
             .input-dist { width: auto; min-width: 100px; }
-
+            
             .slider-panel {
-                border-radius: 14px; /* Пилюля превращается в плашку на мобильных для экономии места */
+                border-radius: 14px; 
                 justify-content: space-between;
             }
-            .slider-panel input[type="range"] {
-                width: 50%;
-            }
+            .slider-panel input[type="range"] { width: 50%; }
         }
     </style>
 </head>
@@ -291,9 +304,11 @@
     <script>
         const SVG_NS = "http://www.w3.org/2000/svg";
         const STRAIGHT = 84.39, R_INNER = 36.50, MATH_LANE_W = 1.22, LANES = 8, C = STRAIGHT / 2;
-        let VIS_LANE_W = 5.0; // Значение по умолчанию
+        let VIS_LANE_W = 5.0; 
         let currentSliderValue = 5.0; 
-        const CHUTE_END_X = -70; 
+        
+        // 100м старт находится ровно на 100 метров от финиша (C = 42.195)
+        const CHUTE_END_X = C - 100; // -57.805
 
         // --- КАЛЬКУЛЯТОР (Сотые доли) ---
         const iDist = document.getElementById('calc-dist'), iMin = document.getElementById('calc-min'), iSec = document.getElementById('calc-sec'), iMs = document.getElementById('calc-ms'), iTarget = document.getElementById('calc-target'), outResult = document.getElementById('calc-result');
@@ -302,12 +317,11 @@
             const dist = parseFloat(iDist.value) || 0;
             const m = parseInt(iMin.value) || 0;
             const s = parseInt(iSec.value) || 0;
-            const ms = parseInt(iMs.value) || 0; // Теперь это сотые доли (0-99)
+            const ms = parseInt(iMs.value) || 0; 
             const target = parseFloat(iTarget.value) || 0;
             
             if (dist <= 0 || target <= 0) { outResult.textContent = "--:--.--"; outResult.style.color = "var(--text-muted)"; return; }
             
-            // Расчет с сотыми долями (ms / 100)
             const totalSec = m * 60 + s + (ms / 100); 
             const pace = totalSec / dist;
             const targetSec = pace * target;
@@ -316,7 +330,7 @@
             
             const outM = Math.floor(targetSec / 60);
             const outS = Math.floor(targetSec % 60);
-            const outMs = Math.floor((targetSec % 1) * 100); // Округление до сотых
+            const outMs = Math.floor((targetSec % 1) * 100); 
             
             outResult.textContent = `${outM}:${outS.toString().padStart(2, '0')}.${outMs.toString().padStart(2, '0')}`;
             outResult.style.color = "var(--track-highlight)";
@@ -326,7 +340,7 @@
             el.addEventListener('input', calculatePace);
             el.addEventListener('blur', (e) => {
                 if(e.target.id === 'calc-sec' && e.target.value) e.target.value = e.target.value.padStart(2, '0');
-                if(e.target.id === 'calc-ms' && e.target.value) e.target.value = e.target.value.padStart(2, '0'); // Форматирование для 2-х знаков
+                if(e.target.id === 'calc-ms' && e.target.value) e.target.value = e.target.value.padStart(2, '0');
             });
         });
         calculatePace();
@@ -339,24 +353,44 @@
 
         function getTrackPath(r) { return `M ${C},${r} A ${r},${r} 0 0,0 ${C},${-r} L ${-C},${-r} A ${r},${r} 0 0,0 ${-C},${r} Z`; }
 
+        // Точное проецирование математической дистанции в визуальные координаты SVG
         function getPos(laneObj, dMeasure) {
             if (dMeasure < 0) return { px: C + dMeasure, py: laneObj.rVis, nx: 0, ny: 1 };
-            const t = dMeasure / laneObj.lTotal, dVis = t * laneObj.visTotal, visCurve = laneObj.rVis * Math.PI;
+            
+            const lCurve = laneObj.rMeasure * Math.PI;
+            let d = dMeasure % laneObj.lTotal;
+            if (d < 0) d += laneObj.lTotal;
+            
             let px, py, nx, ny;
-            if (dVis < visCurve) {
-                const angle = Math.PI/2 - (dVis / visCurve) * Math.PI; px = C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
-            } else if (dVis < visCurve + STRAIGHT) {
-                const ds = dVis - visCurve; px = C - ds; py = -laneObj.rVis; nx = 0; ny = -1;
-            } else if (dVis < 2 * visCurve + STRAIGHT) {
-                const ds = dVis - (visCurve + STRAIGHT); const angle = -Math.PI/2 - (ds / visCurve) * Math.PI; px = -C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
-            } else { const ds = dVis - (2 * visCurve + STRAIGHT); px = -C + ds; py = laneObj.rVis; nx = 0; ny = 1; }
+            if (d < lCurve) {
+                const angle = Math.PI/2 - (d / lCurve) * Math.PI;
+                px = C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
+            } else if (d < lCurve + STRAIGHT) {
+                const ds = d - lCurve; px = C - ds; py = -laneObj.rVis; nx = 0; ny = -1;
+            } else if (d < 2 * lCurve + STRAIGHT) {
+                const ds = d - lCurve - STRAIGHT;
+                const angle = -Math.PI/2 - (ds / lCurve) * Math.PI;
+                px = -C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
+            } else {
+                const ds = d - 2 * lCurve - STRAIGHT; px = -C + ds; py = laneObj.rVis; nx = 0; ny = 1;
+            }
             return { px, py, nx, ny };
         }
 
-        // Обновленная функция отрисовки с учетом адаптивности (x3 на мобилках)
+        // Обратное преобразование: из математической длины в длину кривой SVG для stroke-dasharray
+        function dMeasureToDVis(laneObj, dMeasure) {
+            if (dMeasure < 0) return dMeasure; 
+            const lCurve = laneObj.rMeasure * Math.PI, visCurve = laneObj.rVis * Math.PI;
+            let d = dMeasure % laneObj.lTotal; if (d < 0) d += laneObj.lTotal;
+            
+            if (d < lCurve) return (d / lCurve) * visCurve;
+            else if (d < lCurve + STRAIGHT) return visCurve + (d - lCurve);
+            else if (d < 2 * lCurve + STRAIGHT) return visCurve + STRAIGHT + ((d - lCurve - STRAIGHT) / lCurve) * visCurve;
+            else return 2 * visCurve + STRAIGHT + (d - 2 * lCurve - STRAIGHT);
+        }
+
         function buildTrack(sliderValue) {
             currentSliderValue = sliderValue;
-            // Проверяем ширину экрана. Если это телефон, умножаем значение ползунка на 3.
             const isMobile = window.innerWidth <= 850;
             VIS_LANE_W = isMobile ? sliderValue * 3.0 : sliderValue;
 
@@ -369,7 +403,7 @@
 
             svg.setAttribute('viewBox', `${minX} ${minY} ${widthStr} ${heightStr}`);
             hlChute.setAttribute('stroke-width', VIS_LANE_W); highlight1.setAttribute('stroke-width', VIS_LANE_W); highlight2.setAttribute('stroke-width', VIS_LANE_W);
-            startMarker.setAttribute('r', VIS_LANE_W * 0.3); finishMarker.setAttribute('r', VIS_LANE_W * 0.3);
+            startMarker.setAttribute('r', VIS_LANE_W * 0.35); finishMarker.setAttribute('r', VIS_LANE_W * 0.35);
 
             for (let i = 0; i < LANES; i++) {
                 const rMeasure = i === 0 ? 36.80 : 36.50 + i * MATH_LANE_W + 0.20;
@@ -377,7 +411,13 @@
                 const laneObj = { lane: i, rMeasure, rVis, lTotal, visTotal, marks: [] };
                 const addMark = (name, d) => laneObj.marks.push({ name, d });
                 
-                addMark("Финиш", 0); addMark("100м", -100); addMark("200м", lTotal - 200); addMark("300м", lTotal - 300); addMark("400м", lTotal - 400); addMark("800м", (rMeasure - 36.80) * Math.PI); addMark("1500м", lTotal - 300); 
+                addMark("Финиш", 0); 
+                addMark("100м", -100); 
+                addMark("200м", lTotal - 200); 
+                addMark("300м", lTotal - 300); 
+                addMark("400м", lTotal - 400); 
+                addMark("800м", (rMeasure - 36.80) * Math.PI); 
+                addMark("1500м", lTotal - 300); 
                 tracksData.push(laneObj);
 
                 const lanePath = document.createElementNS(SVG_NS, 'path');
@@ -412,34 +452,89 @@
 
         const pt = svg.createSVGPoint();
         
+        // НОВЫЙ 100% ТОЧНЫЙ ГЕОМЕТРИЧЕСКИЙ РАСЧЕТ КЛИКА
         function getMouseData(e) {
             pt.x = e.clientX; pt.y = e.clientY;
             const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-            let laneIdx = -1, dMeasure = 0;
-            const distToChute = Math.abs(svgP.y - (36.50 + 4 * VIS_LANE_W)), rMouseCurve = Math.sqrt((svgP.x + C)**2 + svgP.y**2), distToCurve = Math.abs(rMouseCurve - (36.50 + 4 * VIS_LANE_W));
+            const mx = svgP.x, my = svgP.y;
 
-            if (svgP.x < -C && svgP.y > 0 && distToChute < distToCurve) {
-                laneIdx = Math.floor((svgP.y - R_INNER) / VIS_LANE_W); if (laneIdx >= 0 && laneIdx < LANES) dMeasure = -(C - svgP.x);
-            } else {
-                let rMouse = svgP.x > C ? Math.sqrt((svgP.x - C)**2 + svgP.y**2) : (svgP.x < -C ? Math.sqrt((svgP.x + C)**2 + svgP.y**2) : Math.abs(svgP.y));
-                laneIdx = Math.floor((rMouse - R_INNER) / VIS_LANE_W);
-                if (laneIdx >= 0 && laneIdx < LANES) {
-                    const laneObj = tracksData[laneIdx], lVisCurve = laneObj.rVis * Math.PI; let dVis = 0;
-                    if (svgP.x > C) { let angle = Math.atan2(svgP.y, svgP.x - C); if (angle < -Math.PI/2) angle += 2*Math.PI; dVis = ((Math.PI/2 - angle) / Math.PI) * lVisCurve; } 
-                    else if (svgP.x < -C) { let angle = Math.atan2(svgP.y, svgP.x + C); if (angle > 0) angle -= 2*Math.PI; dVis = lVisCurve + STRAIGHT + ((-Math.PI/2 - angle) / Math.PI) * lVisCurve; } 
-                    else { if (svgP.y < 0) dVis = lVisCurve + (C - svgP.x); else dVis = 2*lVisCurve + STRAIGHT + (svgP.x - (-C)); }
-                    dMeasure = (dVis / laneObj.visTotal) * laneObj.lTotal;
+            let minDist = Infinity;
+            let bestLane = -1;
+            let bestSegment = null;
+
+            const lanesToCheck = (lockedLane !== null) ? [lockedLane] : [0, 1, 2, 3, 4, 5, 6, 7];
+
+            for (let i of lanesToCheck) {
+                const laneObj = tracksData[i];
+                const rVis = laneObj.rVis;
+                let d;
+
+                // 1. Правый вираж
+                if (mx > C) {
+                    d = Math.abs(Math.sqrt((mx - C)**2 + my**2) - rVis);
+                    if (d < minDist) { minDist = d; bestLane = i; bestSegment = 'RIGHT_CURVE'; }
+                }
+                // 2. Левый вираж
+                if (mx < -C) {
+                    d = Math.abs(Math.sqrt((mx + C)**2 + my**2) - rVis);
+                    if (d < minDist) { minDist = d; bestLane = i; bestSegment = 'LEFT_CURVE'; }
+                }
+                // 3. Верхняя прямая
+                if (mx >= -C && mx <= C && my <= 0) {
+                    d = Math.abs(my - (-rVis));
+                    if (d < minDist) { minDist = d; bestLane = i; bestSegment = 'TOP_STRAIGHT'; }
+                }
+                // 4. Нижняя прямая
+                if (mx >= -C && mx <= C && my > 0) {
+                    d = Math.abs(my - rVis);
+                    if (d < minDist) { minDist = d; bestLane = i; bestSegment = 'BOTTOM_STRAIGHT'; }
+                }
+                // 5. Аппендикс 100м
+                if (mx < -C && my > 0) {
+                    if (mx >= CHUTE_END_X) d = Math.abs(my - rVis);
+                    else d = Math.sqrt((mx - CHUTE_END_X)**2 + (my - rVis)**2);
+                    if (d < minDist) { minDist = d; bestLane = i; bestSegment = 'CHUTE'; }
                 }
             }
-            if (laneIdx < 0 || laneIdx >= LANES) return null;
-            if (lockedLane !== null && laneIdx !== lockedLane) laneIdx = lockedLane;
 
-            const laneObj = tracksData[laneIdx]; let snappedMark = null;
-            for (let m of laneObj.marks) {
-                if (m.d < 0 && dMeasure < 0) { if (Math.abs(dMeasure - m.d) < 1.5) { dMeasure = m.d; snappedMark = m.name; break; } } 
-                else if (m.d >= 0 && dMeasure >= 0) { let diff = Math.abs(dMeasure - m.d); if (diff > laneObj.lTotal / 2) diff = laneObj.lTotal - diff; if (diff < 1.5) { dMeasure = m.d; snappedMark = m.name; break; } }
+            if (bestLane === -1) return null;
+
+            const laneObj = tracksData[bestLane];
+            const lCrvMeasure = laneObj.rMeasure * Math.PI;
+            let dMeasure = 0;
+
+            // Расчет идеальной математической дистанции для выбранного сегмента
+            if (bestSegment === 'CHUTE') {
+                dMeasure = -(C - Math.max(mx, CHUTE_END_X)); 
+            } else if (bestSegment === 'RIGHT_CURVE') {
+                let angle = Math.atan2(my, mx - C);
+                if (angle < -Math.PI/2) angle += 2*Math.PI;
+                const frac = (Math.PI/2 - angle) / Math.PI;
+                dMeasure = frac * lCrvMeasure;
+            } else if (bestSegment === 'TOP_STRAIGHT') {
+                dMeasure = lCrvMeasure + (C - mx);
+            } else if (bestSegment === 'LEFT_CURVE') {
+                let angle = Math.atan2(my, mx + C);
+                if (angle > 0) angle -= 2 * Math.PI;
+                const frac = (-Math.PI/2 - angle) / Math.PI;
+                dMeasure = lCrvMeasure + STRAIGHT + frac * lCrvMeasure;
+            } else if (bestSegment === 'BOTTOM_STRAIGHT') {
+                dMeasure = 2 * lCrvMeasure + STRAIGHT + (mx - (-C));
             }
-            return { lane: laneIdx, d: dMeasure, snappedMark };
+
+            // Магнитная привязка к стандартным отметкам
+            let snappedMark = null;
+            for (let m of laneObj.marks) {
+                if (m.d < 0 && dMeasure < 0) { 
+                    if (Math.abs(dMeasure - m.d) < 3.5) { dMeasure = m.d; snappedMark = m.name; break; } 
+                } else if (m.d >= 0 && dMeasure >= 0) { 
+                    let diff = Math.abs(dMeasure - m.d); 
+                    if (diff > laneObj.lTotal / 2) diff = laneObj.lTotal - diff; 
+                    if (diff < 3.5) { dMeasure = m.d; snappedMark = m.name; break; } 
+                }
+            }
+
+            return { lane: bestLane, d: dMeasure, snappedMark };
         }
 
         function updateUI() {
@@ -480,9 +575,11 @@
 
                 const ovalStartD = Math.max(0, startPoint.d), ovalEndD = Math.max(0, endD);
                 if (ovalStartD !== ovalEndD || dist >= tObj.lTotal - 0.1) {
-                    const startVis = (ovalStartD / tObj.lTotal) * tObj.visTotal; let len;
+                    const startVis = dMeasureToDVis(tObj, ovalStartD); 
+                    let len;
                     if (dist >= tObj.lTotal - 0.1) len = tObj.visTotal; 
-                    else { len = ((ovalEndD / tObj.lTotal) * tObj.visTotal) - startVis; if (len < 0) len += tObj.visTotal; }
+                    else { const endVis = dMeasureToDVis(tObj, ovalEndD); len = endVis - startVis; if (len < 0) len += tObj.visTotal; }
+                    
                     const pathStr = getTrackPath(36.50 + lane * VIS_LANE_W + VIS_LANE_W / 2);
                     highlight1.setAttribute('d', pathStr); highlight1.setAttribute('stroke-dasharray', `${len} 999999`); highlight1.setAttribute('stroke-dashoffset', `-${startVis}`);
                     if (startVis + len > tObj.visTotal) { highlight2.setAttribute('d', pathStr); highlight2.setAttribute('stroke-dasharray', `${(startVis + len) - tObj.visTotal} 999999`); highlight2.setAttribute('stroke-dashoffset', `0`); } 
@@ -493,13 +590,8 @@
             }
         }
 
-        // Первичная инициализация
         buildTrack(currentSliderValue);
-
-        // Перерисовка стадиона при изменении размера окна (или повороте телефона)
-        window.addEventListener('resize', () => {
-            buildTrack(currentSliderValue);
-        });
+        window.addEventListener('resize', () => { buildTrack(currentSliderValue); });
 
         const slider = document.getElementById('width-slider'), sliderVal = document.getElementById('width-val');
         slider.addEventListener('input', (e) => { const val = parseFloat(e.target.value); sliderVal.textContent = val.toFixed(1); buildTrack(val); });
