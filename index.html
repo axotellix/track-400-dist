@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Track Measure & Pace Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -40,20 +40,18 @@
             inset: 0;
             pointer-events: none;
             z-index: -1;
-            
             background-image: 
                 linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
                 linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
             background-size: 80px 80px;
             background-position: center center;
-            
             -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
             mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
         }
 
         .container {
             position: relative;
-            width: 95vw;
+            width: 100vw;
             max-width: 1600px;
             height: 100vh;
             display: flex;
@@ -62,7 +60,6 @@
             justify-content: center;
         }
 
-        /* Увеличен масштаб и сдвинут вверх */
         svg {
             width: 100%;
             height: 100%;
@@ -70,58 +67,44 @@
             transform: scale(1.12) translateY(-8%);
             filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.8));
             user-select: none;
-            transition: viewBox 0.1s ease;
+            transition: viewBox 0.1s ease, transform 0.3s ease;
+            touch-action: none; 
         }
 
-        .lane-fill {
-            fill: none;
-            stroke: var(--track-base);
-            transition: stroke 0.3s ease, filter 0.3s ease;
-            cursor: crosshair;
-            stroke-linecap: butt;
-        }
-        
+        .lane-fill { fill: none; stroke: var(--track-base); transition: stroke 0.3s ease, filter 0.3s ease; cursor: crosshair; stroke-linecap: butt; }
         .lane-fill:hover { stroke: var(--track-hover); }
-        .lane-fill.locked {
-            stroke: var(--track-active);
-            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.2));
-        }
+        .lane-fill.locked { stroke: var(--track-active); filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.2)); }
         .lane-fill.dimmed { stroke: #1a0a0a; opacity: 0.5; }
-
         .lane-divider { fill: none; stroke: rgba(255, 255, 255, 0.15); pointer-events: none; }
         .mark-line { stroke: rgba(255, 255, 255, 0.25); pointer-events: none; }
-        .mark-text {
-            fill: rgba(255, 255, 255, 0.5); font-weight: 600;
-            pointer-events: none; text-anchor: middle; dominant-baseline: central;
-        }
-
+        .mark-text { fill: rgba(255, 255, 255, 0.5); font-weight: 600; pointer-events: none; text-anchor: middle; dominant-baseline: central; }
         #cursor-line { stroke: #ffffff; pointer-events: none; transition: stroke 0.15s ease; stroke-linecap: round; }
         #cursor-line.snapped { stroke: #60a5fa; filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.8)); }
-        
         .highlight-segment { fill: none; stroke: var(--track-highlight); pointer-events: none; stroke-linecap: butt; filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); }
         .point-marker { fill: #ffffff; pointer-events: none; filter: drop-shadow(0 0 6px rgba(255,255,255,0.9)); }
 
         .center-display {
             position: absolute;
-            top: 43%; /* Сдвинут чуть выше вместе со стадионом */
+            top: 43%; /* Сдвинуто чуть выше для визуального центра */
             left: 50%;
             transform: translate(-50%, -50%);
             background: var(--panel-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 30px 50px;
+            border-radius: 14px; /* Скругление 18px (было 20) */
+            padding: 25px 40px; /* Слегка уменьшен внутренний отступ */
             text-align: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
             pointer-events: none;
+            transition: all 0.3s ease;
         }
 
-        .center-display .label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
-        .center-display .distance { font-size: 40px; font-weight: 700; color: rgba(255, 255, 255, 0.95); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 8px; text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
-        .center-display .hint { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+        /* Уменьшены размеры шрифтов в плашке */
+        .center-display .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+        .center-display .distance { font-size: 32px; font-weight: 700; color: rgba(255, 255, 255, 0.95); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 6px; text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); transition: font-size 0.3s; }
+        .center-display .hint { font-size: 12px; color: var(--text-muted); font-weight: 400; }
 
-        /* Контейнер для нижних панелей */
         .bottom-ui-container {
             position: absolute;
             bottom: 30px;
@@ -132,9 +115,10 @@
             align-items: center;
             gap: 12px;
             z-index: 10;
+            width: max-content;
+            max-width: 95vw;
         }
 
-        /* Общие стили панелей */
         .controls-panel {
             background: var(--panel-bg);
             backdrop-filter: blur(12px);
@@ -142,111 +126,104 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
+            box-sizing: border-box;
         }
 
-        /* Панель Калькулятора */
-        .calc-panel {
-            border-radius: 16px;
-            padding: 16px 24px;
-            flex-direction: row;
-            align-items: center;
-            gap: 24px;
-        }
+        .calc-panel { border-radius: 14px; /* Скругление 14px (было 16) */ padding: 16px 24px; flex-direction: row; align-items: center; gap: 24px; width: 100%; }
+        .calc-group { display: flex; flex-direction: column; gap: 8px; }
+        .calc-group label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
 
-        .calc-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .calc-group label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        /* Стилизация инпутов */
         input[type="number"] {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255,255,255,0.1);
             color: white;
-            padding: 8px 10px;
+            padding: 0 10px;
+            height: 40px; 
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 16px; 
             font-weight: 500;
             font-variant-numeric: tabular-nums;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
             text-align: center;
+            box-sizing: border-box;
         }
 
-        input[type="number"]:focus {
-            border-color: var(--track-highlight);
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-        }
-
-        /* Убираем стрелочки у чисел */
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"]:focus { border-color: var(--track-highlight); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
 
-        .input-dist { width: 70px; }
+        .input-dist { width: 80px; }
+        .time-inputs { display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-weight: 600; }
         
-        .time-inputs {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        
-        .input-min, .input-sec { width: 35px; }
-        .input-ms { width: 45px; }
+        /* Ширина полей времени уравнена */
+        .input-min, .input-sec, .input-ms { width: 45px; }
 
-        .calc-divider {
-            width: 1px;
-            height: 36px;
-            background: rgba(255,255,255,0.1);
-        }
+        .calc-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.1); }
+        .calc-result { font-size: 20px; font-weight: 700; color: var(--track-highlight); font-variant-numeric: tabular-nums; height: 40px; display: flex; align-items: center; text-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
 
-        .calc-result {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--track-highlight);
-            font-variant-numeric: tabular-nums;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            text-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
-        }
-
-        /* Панель ползунка (сделали компактной капсулой) */
-        .slider-panel {
-            border-radius: 100px;
-            padding: 10px 24px;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .slider-panel label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 0;
-        }
-
+        .slider-panel { border-radius: 100px; padding: 12px 24px; align-items: center; gap: 15px; width: 100%; justify-content: center; }
+        .slider-panel label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; display: flex; align-items: center; gap: 10px; margin: 0; }
         .slider-panel span { color: white; font-variant-numeric: tabular-nums; }
-        .slider-panel input[type="range"] { width: 150px; margin: 0; accent-color: var(--track-highlight); cursor: pointer; }
+        .slider-panel input[type="range"] { width: 150px; margin: 0; accent-color: var(--track-highlight); cursor: pointer; height: 20px; }
 
         #tooltip { position: absolute; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; pointer-events: none; opacity: 0; transform: translate(-50%, -150%); transition: opacity 0.2s; backdrop-filter: blur(4px); }
+
+        /* === АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ === */
+        @media (max-width: 850px) {
+            svg {
+                transform: scale(1.1) translateY(-18%); /* Стадион стал крупнее на мобилках */
+                max-height: 55vh;
+            }
+            
+            .center-display {
+                top: 12%; /* Плашка перенесена наверх */
+                padding: 12px 20px;
+                width: auto;
+                min-width: 160px;
+            }
+            
+            /* На мобильных шрифты еще чуть меньше для компактности */
+            .center-display .distance { font-size: 26px; margin-bottom: 2px; }
+            .center-display .hint { font-size: 11px; }
+            .center-display .label { font-size: 10px; }
+
+            .bottom-ui-container {
+                bottom: 15px;
+                width: 92vw;
+            }
+
+            .calc-panel {
+                flex-direction: column; 
+                gap: 12px;
+                padding: 16px;
+                align-items: stretch; 
+            }
+
+            .calc-group {
+                flex-direction: row; 
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .calc-divider { width: 100%; height: 1px; margin: 4px 0; }
+
+            .input-dist, .time-inputs {
+                width: 60%; 
+                justify-content: flex-end;
+            }
+            .input-dist { width: auto; min-width: 100px; }
+
+            .slider-panel {
+                border-radius: 14px; /* Пилюля превращается в плашку на мобильных для экономии места */
+                justify-content: space-between;
+            }
+            .slider-panel input[type="range"] {
+                width: 50%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -265,9 +242,9 @@
         </svg>
 
         <div class="center-display">
-            <div class="label" id="ui-label">Дистанция на треке</div>
+            <div class="label" id="ui-label">Дистанция</div>
             <div class="distance" id="ui-distance">0.00 м</div>
-            <div class="hint" id="ui-hint">Кликните на дорожку для старта</div>
+            <div class="hint" id="ui-hint">Тапните на дорожку</div>
         </div>
 
         <div class="bottom-ui-container">
@@ -283,7 +260,7 @@
                         <span>:</span>
                         <input type="number" id="calc-sec" class="input-sec" value="00" placeholder="00">
                         <span>.</span>
-                        <input type="number" id="calc-ms" class="input-ms" value="000" placeholder="000">
+                        <input type="number" id="calc-ms" class="input-ms" value="00" placeholder="00">
                     </div>
                 </div>
                 
@@ -295,7 +272,7 @@
                 </div>
                 <div class="calc-group">
                     <label>Прогноз времени</label>
-                    <div class="calc-result" id="calc-result">2:00.000</div>
+                    <div class="calc-result" id="calc-result">2:00.00</div>
                 </div>
             </div>
 
@@ -314,75 +291,48 @@
     <script>
         const SVG_NS = "http://www.w3.org/2000/svg";
         const STRAIGHT = 84.39, R_INNER = 36.50, MATH_LANE_W = 1.22, LANES = 8, C = STRAIGHT / 2;
-        let VIS_LANE_W = 5.0; 
+        let VIS_LANE_W = 5.0; // Значение по умолчанию
+        let currentSliderValue = 5.0; 
         const CHUTE_END_X = -70; 
 
-        // --- ЛОГИКА КАЛЬКУЛЯТОРА ТЕМПА ---
-        const iDist = document.getElementById('calc-dist');
-        const iMin = document.getElementById('calc-min');
-        const iSec = document.getElementById('calc-sec');
-        const iMs = document.getElementById('calc-ms');
-        const iTarget = document.getElementById('calc-target');
-        const outResult = document.getElementById('calc-result');
+        // --- КАЛЬКУЛЯТОР (Сотые доли) ---
+        const iDist = document.getElementById('calc-dist'), iMin = document.getElementById('calc-min'), iSec = document.getElementById('calc-sec'), iMs = document.getElementById('calc-ms'), iTarget = document.getElementById('calc-target'), outResult = document.getElementById('calc-result');
 
         function calculatePace() {
             const dist = parseFloat(iDist.value) || 0;
             const m = parseInt(iMin.value) || 0;
             const s = parseInt(iSec.value) || 0;
-            const ms = parseInt(iMs.value) || 0;
+            const ms = parseInt(iMs.value) || 0; // Теперь это сотые доли (0-99)
             const target = parseFloat(iTarget.value) || 0;
-
-            if (dist <= 0 || target <= 0) {
-                outResult.textContent = "--:--.---";
-                outResult.style.color = "var(--text-muted)";
-                return;
-            }
-
-            // Перевод базового времени в секунды
-            const totalSec = m * 60 + s + (ms / 1000);
             
-            // Темп: секунд на метр
-            const pace = totalSec / dist; 
+            if (dist <= 0 || target <= 0) { outResult.textContent = "--:--.--"; outResult.style.color = "var(--text-muted)"; return; }
             
-            // Целевое время в секундах
+            // Расчет с сотыми долями (ms / 100)
+            const totalSec = m * 60 + s + (ms / 100); 
+            const pace = totalSec / dist;
             const targetSec = pace * target;
-
-            if (targetSec === 0) {
-                 outResult.textContent = "0:00.000";
-                 return;
-            }
-
+            
+            if (targetSec === 0) { outResult.textContent = "0:00.00"; return; }
+            
             const outM = Math.floor(targetSec / 60);
             const outS = Math.floor(targetSec % 60);
-            const outMs = Math.floor((targetSec % 1) * 1000);
-
-            // Форматирование с нулями
-            const strS = outS.toString().padStart(2, '0');
-            const strMs = outMs.toString().padStart(3, '0');
-
-            outResult.textContent = `${outM}:${strS}.${strMs}`;
+            const outMs = Math.floor((targetSec % 1) * 100); // Округление до сотых
+            
+            outResult.textContent = `${outM}:${outS.toString().padStart(2, '0')}.${outMs.toString().padStart(2, '0')}`;
             outResult.style.color = "var(--track-highlight)";
         }
 
-        // Слушатели для калькулятора
         [iDist, iMin, iSec, iMs, iTarget].forEach(el => {
             el.addEventListener('input', calculatePace);
-            // Красивое форматирование при потере фокуса (добавление нулей)
             el.addEventListener('blur', (e) => {
                 if(e.target.id === 'calc-sec' && e.target.value) e.target.value = e.target.value.padStart(2, '0');
-                if(e.target.id === 'calc-ms' && e.target.value) e.target.value = e.target.value.padStart(3, '0');
+                if(e.target.id === 'calc-ms' && e.target.value) e.target.value = e.target.value.padStart(2, '0'); // Форматирование для 2-х знаков
             });
         });
-        calculatePace(); // Инициализация
+        calculatePace();
 
-
-        // --- ЛОГИКА СТАДИОНА ---
-        const svg = document.getElementById('track-svg');
-        const gFills = document.getElementById('g-lane-fills'), gDividers = document.getElementById('g-lane-dividers'), gMarks = document.getElementById('g-marks');
-        const cursorLine = document.getElementById('cursor-line'), hlChute = document.getElementById('highlight-chute');
-        const highlight1 = document.getElementById('highlight-1'), highlight2 = document.getElementById('highlight-2');
-        const startMarker = document.getElementById('start-marker'), finishMarker = document.getElementById('finish-marker');
-        const uiDist = document.getElementById('ui-distance'), uiHint = document.getElementById('ui-hint'), tooltip = document.getElementById('tooltip');
+        // --- СТАДИОН ---
+        const svg = document.getElementById('track-svg'), gFills = document.getElementById('g-lane-fills'), gDividers = document.getElementById('g-lane-dividers'), gMarks = document.getElementById('g-marks'), cursorLine = document.getElementById('cursor-line'), hlChute = document.getElementById('highlight-chute'), highlight1 = document.getElementById('highlight-1'), highlight2 = document.getElementById('highlight-2'), startMarker = document.getElementById('start-marker'), finishMarker = document.getElementById('finish-marker'), uiDist = document.getElementById('ui-distance'), uiHint = document.getElementById('ui-hint'), tooltip = document.getElementById('tooltip');
 
         let lockedLane = null, startPoint = null, finishPoint = null, activeHover = null, hasMovedAway = false; 
         const tracksData = [];
@@ -394,85 +344,66 @@
             const t = dMeasure / laneObj.lTotal, dVis = t * laneObj.visTotal, visCurve = laneObj.rVis * Math.PI;
             let px, py, nx, ny;
             if (dVis < visCurve) {
-                const angle = Math.PI/2 - (dVis / visCurve) * Math.PI;
-                px = C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle);
-                nx = Math.cos(angle); ny = Math.sin(angle);
+                const angle = Math.PI/2 - (dVis / visCurve) * Math.PI; px = C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
             } else if (dVis < visCurve + STRAIGHT) {
                 const ds = dVis - visCurve; px = C - ds; py = -laneObj.rVis; nx = 0; ny = -1;
             } else if (dVis < 2 * visCurve + STRAIGHT) {
-                const ds = dVis - (visCurve + STRAIGHT);
-                const angle = -Math.PI/2 - (ds / visCurve) * Math.PI;
-                px = -C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle);
-                nx = Math.cos(angle); ny = Math.sin(angle);
-            } else {
-                const ds = dVis - (2 * visCurve + STRAIGHT); px = -C + ds; py = laneObj.rVis; nx = 0; ny = 1;
-            }
+                const ds = dVis - (visCurve + STRAIGHT); const angle = -Math.PI/2 - (ds / visCurve) * Math.PI; px = -C + laneObj.rVis * Math.cos(angle); py = laneObj.rVis * Math.sin(angle); nx = Math.cos(angle); ny = Math.sin(angle);
+            } else { const ds = dVis - (2 * visCurve + STRAIGHT); px = -C + ds; py = laneObj.rVis; nx = 0; ny = 1; }
             return { px, py, nx, ny };
         }
 
-        function buildTrack(widthVal) {
-            VIS_LANE_W = widthVal;
+        // Обновленная функция отрисовки с учетом адаптивности (x3 на мобилках)
+        function buildTrack(sliderValue) {
+            currentSliderValue = sliderValue;
+            // Проверяем ширину экрана. Если это телефон, умножаем значение ползунка на 3.
+            const isMobile = window.innerWidth <= 850;
+            VIS_LANE_W = isMobile ? sliderValue * 3.0 : sliderValue;
+
             tracksData.length = 0; gFills.innerHTML = ''; gDividers.innerHTML = ''; gMarks.innerHTML = '';
 
-            const rOutmost = R_INNER + LANES * VIS_LANE_W;
-            const padding = 30;
-            const rightEdge = C + rOutmost, leftEdge = Math.min(CHUTE_END_X, -C - rOutmost);
-            const maxDistX = Math.max(Math.abs(rightEdge), Math.abs(leftEdge));
-            
+            const rOutmost = R_INNER + LANES * VIS_LANE_W, padding = 30;
+            const rightEdge = C + rOutmost, leftEdge = Math.min(CHUTE_END_X, -C - rOutmost), maxDistX = Math.max(Math.abs(rightEdge), Math.abs(leftEdge));
             const minX = -maxDistX - padding, widthStr = (maxDistX + padding) * 2;
             const maxDistY = rOutmost, minY = -maxDistY - padding, heightStr = (maxDistY + padding) * 2;
 
             svg.setAttribute('viewBox', `${minX} ${minY} ${widthStr} ${heightStr}`);
-
             hlChute.setAttribute('stroke-width', VIS_LANE_W); highlight1.setAttribute('stroke-width', VIS_LANE_W); highlight2.setAttribute('stroke-width', VIS_LANE_W);
             startMarker.setAttribute('r', VIS_LANE_W * 0.3); finishMarker.setAttribute('r', VIS_LANE_W * 0.3);
 
             for (let i = 0; i < LANES; i++) {
                 const rMeasure = i === 0 ? 36.80 : 36.50 + i * MATH_LANE_W + 0.20;
-                const lTotal = 2 * (rMeasure * Math.PI) + 2 * STRAIGHT;
-                const rVis = 36.50 + i * VIS_LANE_W + VIS_LANE_W / 2;
-                const visTotal = 2 * (rVis * Math.PI) + 2 * STRAIGHT;
-
+                const lTotal = 2 * (rMeasure * Math.PI) + 2 * STRAIGHT, rVis = 36.50 + i * VIS_LANE_W + VIS_LANE_W / 2, visTotal = 2 * (rVis * Math.PI) + 2 * STRAIGHT;
                 const laneObj = { lane: i, rMeasure, rVis, lTotal, visTotal, marks: [] };
                 const addMark = (name, d) => laneObj.marks.push({ name, d });
                 
-                addMark("Финиш", 0); addMark("100м", -100); addMark("200м", lTotal - 200); addMark("300м", lTotal - 300);
-                addMark("400м", lTotal - 400); addMark("800м", (rMeasure - 36.80) * Math.PI); addMark("1500м", lTotal - 300); 
-
+                addMark("Финиш", 0); addMark("100м", -100); addMark("200м", lTotal - 200); addMark("300м", lTotal - 300); addMark("400м", lTotal - 400); addMark("800м", (rMeasure - 36.80) * Math.PI); addMark("1500м", lTotal - 300); 
                 tracksData.push(laneObj);
 
                 const lanePath = document.createElementNS(SVG_NS, 'path');
                 lanePath.setAttribute('d', getTrackPath(rVis) + ` M ${-C},${rVis} L ${CHUTE_END_X},${rVis}`);
-                lanePath.setAttribute('stroke-width', VIS_LANE_W); lanePath.classList.add('lane-fill'); lanePath.dataset.lane = i;
-                gFills.appendChild(lanePath);
+                lanePath.setAttribute('stroke-width', VIS_LANE_W); lanePath.classList.add('lane-fill'); lanePath.dataset.lane = i; gFills.appendChild(lanePath);
 
-                const rOut = 36.50 + (i + 1) * VIS_LANE_W;
-                const divider = document.createElementNS(SVG_NS, 'path');
+                const rOut = 36.50 + (i + 1) * VIS_LANE_W, divider = document.createElementNS(SVG_NS, 'path');
                 divider.setAttribute('d', getTrackPath(rOut) + ` M ${-C},${rOut} L ${CHUTE_END_X},${rOut}`);
-                divider.classList.add('lane-divider'); divider.style.strokeWidth = VIS_LANE_W * 0.05; 
-                gDividers.appendChild(divider);
+                divider.classList.add('lane-divider'); divider.style.strokeWidth = VIS_LANE_W * 0.05; gDividers.appendChild(divider);
 
                 if (i === 0) {
                     const innerDivider = document.createElementNS(SVG_NS, 'path');
                     innerDivider.setAttribute('d', getTrackPath(R_INNER) + ` M ${-C},${R_INNER} L ${CHUTE_END_X},${R_INNER}`);
-                    innerDivider.classList.add('lane-divider'); innerDivider.style.strokeWidth = VIS_LANE_W * 0.05;
-                    gDividers.appendChild(innerDivider);
+                    innerDivider.classList.add('lane-divider'); innerDivider.style.strokeWidth = VIS_LANE_W * 0.05; gDividers.appendChild(innerDivider);
                 }
 
                 laneObj.marks.forEach(mark => {
-                    const pos = getPos(laneObj, mark.d);
-                    const line = document.createElementNS(SVG_NS, 'line');
+                    const pos = getPos(laneObj, mark.d), line = document.createElementNS(SVG_NS, 'line');
                     line.setAttribute('x1', pos.px - pos.nx * (VIS_LANE_W / 2.2)); line.setAttribute('y1', pos.py - pos.ny * (VIS_LANE_W / 2.2));
                     line.setAttribute('x2', pos.px + pos.nx * (VIS_LANE_W / 2.2)); line.setAttribute('y2', pos.py + pos.ny * (VIS_LANE_W / 2.2));
-                    line.classList.add('mark-line'); line.style.strokeWidth = VIS_LANE_W * 0.14; 
-                    gMarks.appendChild(line);
+                    line.classList.add('mark-line'); line.style.strokeWidth = VIS_LANE_W * 0.14; gMarks.appendChild(line);
 
                     if (mark.name === "Финиш") {
                         const text = document.createElementNS(SVG_NS, 'text');
-                        text.setAttribute('x', pos.px); text.setAttribute('y', pos.py);
-                        text.textContent = i + 1; text.classList.add('mark-text'); text.style.fontSize = (VIS_LANE_W * 0.6) + 'px'; 
-                        text.setAttribute('transform', `rotate(90, ${pos.px}, ${pos.py}) translate(0, 0)`);
-                        gMarks.appendChild(text);
+                        text.setAttribute('x', pos.px); text.setAttribute('y', pos.py); text.textContent = i + 1; text.classList.add('mark-text'); text.style.fontSize = (VIS_LANE_W * 0.6) + 'px'; 
+                        text.setAttribute('transform', `rotate(90, ${pos.px}, ${pos.py}) translate(0, 0)`); gMarks.appendChild(text);
                     }
                 });
             }
@@ -485,55 +416,28 @@
             pt.x = e.clientX; pt.y = e.clientY;
             const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
             let laneIdx = -1, dMeasure = 0;
-            
-            const distToChute = Math.abs(svgP.y - (36.50 + 4 * VIS_LANE_W));
-            const rMouseCurve = Math.sqrt((svgP.x + C)**2 + svgP.y**2);
-            const distToCurve = Math.abs(rMouseCurve - (36.50 + 4 * VIS_LANE_W));
+            const distToChute = Math.abs(svgP.y - (36.50 + 4 * VIS_LANE_W)), rMouseCurve = Math.sqrt((svgP.x + C)**2 + svgP.y**2), distToCurve = Math.abs(rMouseCurve - (36.50 + 4 * VIS_LANE_W));
 
             if (svgP.x < -C && svgP.y > 0 && distToChute < distToCurve) {
-                laneIdx = Math.floor((svgP.y - R_INNER) / VIS_LANE_W);
-                if (laneIdx >= 0 && laneIdx < LANES) dMeasure = -(C - svgP.x);
+                laneIdx = Math.floor((svgP.y - R_INNER) / VIS_LANE_W); if (laneIdx >= 0 && laneIdx < LANES) dMeasure = -(C - svgP.x);
             } else {
-                let rMouse;
-                if (svgP.x > C) rMouse = Math.sqrt((svgP.x - C)**2 + svgP.y**2);
-                else if (svgP.x < -C) rMouse = Math.sqrt((svgP.x + C)**2 + svgP.y**2);
-                else rMouse = Math.abs(svgP.y);
-
+                let rMouse = svgP.x > C ? Math.sqrt((svgP.x - C)**2 + svgP.y**2) : (svgP.x < -C ? Math.sqrt((svgP.x + C)**2 + svgP.y**2) : Math.abs(svgP.y));
                 laneIdx = Math.floor((rMouse - R_INNER) / VIS_LANE_W);
-                
                 if (laneIdx >= 0 && laneIdx < LANES) {
-                    const laneObj = tracksData[laneIdx], lVisCurve = laneObj.rVis * Math.PI;
-                    let dVis = 0;
-
-                    if (svgP.x > C) {
-                        let angle = Math.atan2(svgP.y, svgP.x - C);
-                        if (angle < -Math.PI/2) angle += 2*Math.PI;
-                        dVis = ((Math.PI/2 - angle) / Math.PI) * lVisCurve;
-                    } else if (svgP.x < -C) {
-                        let angle = Math.atan2(svgP.y, svgP.x + C);
-                        if (angle > 0) angle -= 2*Math.PI;
-                        dVis = lVisCurve + STRAIGHT + ((-Math.PI/2 - angle) / Math.PI) * lVisCurve;
-                    } else {
-                        if (svgP.y < 0) dVis = lVisCurve + (C - svgP.x); else dVis = 2*lVisCurve + STRAIGHT + (svgP.x - (-C)); 
-                    }
+                    const laneObj = tracksData[laneIdx], lVisCurve = laneObj.rVis * Math.PI; let dVis = 0;
+                    if (svgP.x > C) { let angle = Math.atan2(svgP.y, svgP.x - C); if (angle < -Math.PI/2) angle += 2*Math.PI; dVis = ((Math.PI/2 - angle) / Math.PI) * lVisCurve; } 
+                    else if (svgP.x < -C) { let angle = Math.atan2(svgP.y, svgP.x + C); if (angle > 0) angle -= 2*Math.PI; dVis = lVisCurve + STRAIGHT + ((-Math.PI/2 - angle) / Math.PI) * lVisCurve; } 
+                    else { if (svgP.y < 0) dVis = lVisCurve + (C - svgP.x); else dVis = 2*lVisCurve + STRAIGHT + (svgP.x - (-C)); }
                     dMeasure = (dVis / laneObj.visTotal) * laneObj.lTotal;
                 }
             }
-
             if (laneIdx < 0 || laneIdx >= LANES) return null;
             if (lockedLane !== null && laneIdx !== lockedLane) laneIdx = lockedLane;
 
-            const laneObj = tracksData[laneIdx];
-            let snappedMark = null;
-
+            const laneObj = tracksData[laneIdx]; let snappedMark = null;
             for (let m of laneObj.marks) {
-                if (m.d < 0 && dMeasure < 0) {
-                    if (Math.abs(dMeasure - m.d) < 1.5) { dMeasure = m.d; snappedMark = m.name; break; }
-                } else if (m.d >= 0 && dMeasure >= 0) {
-                    let diff = Math.abs(dMeasure - m.d);
-                    if (diff > laneObj.lTotal / 2) diff = laneObj.lTotal - diff; 
-                    if (diff < 1.5) { dMeasure = m.d; snappedMark = m.name; break; }
-                }
+                if (m.d < 0 && dMeasure < 0) { if (Math.abs(dMeasure - m.d) < 1.5) { dMeasure = m.d; snappedMark = m.name; break; } } 
+                else if (m.d >= 0 && dMeasure >= 0) { let diff = Math.abs(dMeasure - m.d); if (diff > laneObj.lTotal / 2) diff = laneObj.lTotal - diff; if (diff < 1.5) { dMeasure = m.d; snappedMark = m.name; break; } }
             }
             return { lane: laneIdx, d: dMeasure, snappedMark };
         }
@@ -547,27 +451,16 @@
 
             if (activeHover && !finishPoint) {
                 const pos = getPos(tracksData[activeHover.lane], activeHover.d);
-                cursorLine.setAttribute('x1', pos.px - pos.nx * (VIS_LANE_W / 2)); cursorLine.setAttribute('y1', pos.py - pos.ny * (VIS_LANE_W / 2));
-                cursorLine.setAttribute('x2', pos.px + pos.nx * (VIS_LANE_W / 2)); cursorLine.setAttribute('y2', pos.py + pos.ny * (VIS_LANE_W / 2));
-                cursorLine.setAttribute('opacity', 1);
-                cursorLine.style.strokeWidth = activeHover.snappedMark ? (VIS_LANE_W * 0.28) : (VIS_LANE_W * 0.11);
-                cursorLine.className.baseVal = activeHover.snappedMark ? 'snapped' : '';
+                cursorLine.setAttribute('x1', pos.px - pos.nx * (VIS_LANE_W / 2)); cursorLine.setAttribute('y1', pos.py - pos.ny * (VIS_LANE_W / 2)); cursorLine.setAttribute('x2', pos.px + pos.nx * (VIS_LANE_W / 2)); cursorLine.setAttribute('y2', pos.py + pos.ny * (VIS_LANE_W / 2));
+                cursorLine.setAttribute('opacity', 1); cursorLine.style.strokeWidth = activeHover.snappedMark ? (VIS_LANE_W * 0.28) : (VIS_LANE_W * 0.11); cursorLine.className.baseVal = activeHover.snappedMark ? 'snapped' : '';
             } else cursorLine.setAttribute('opacity', 0);
 
-            if (startPoint) {
-                const p = getPos(tracksData[startPoint.lane], startPoint.d);
-                startMarker.setAttribute('cx', p.px); startMarker.setAttribute('cy', p.py); startMarker.setAttribute('opacity', 1);
-            } else startMarker.setAttribute('opacity', 0);
-
-            if (finishPoint) {
-                const p = getPos(tracksData[finishPoint.lane], finishPoint.d);
-                finishMarker.setAttribute('cx', p.px); finishMarker.setAttribute('cy', p.py); finishMarker.setAttribute('opacity', 1);
-            } else finishMarker.setAttribute('opacity', 0);
+            if (startPoint) { const p = getPos(tracksData[startPoint.lane], startPoint.d); startMarker.setAttribute('cx', p.px); startMarker.setAttribute('cy', p.py); startMarker.setAttribute('opacity', 1); } else startMarker.setAttribute('opacity', 0);
+            if (finishPoint) { const p = getPos(tracksData[finishPoint.lane], finishPoint.d); finishMarker.setAttribute('cx', p.px); finishMarker.setAttribute('cy', p.py); finishMarker.setAttribute('opacity', 1); } else finishMarker.setAttribute('opacity', 0);
 
             if (startPoint) {
                 const lane = startPoint.lane, tObj = tracksData[lane];
                 const endD = finishPoint ? finishPoint.d : (activeHover ? activeHover.d : startPoint.d);
-                
                 let dist = endD - startPoint.d;
                 while (dist < 0) dist += tObj.lTotal;
                 if (dist < 0.1 && hasMovedAway && startPoint.d >= 0) dist = tObj.lTotal;
@@ -575,76 +468,65 @@
                 uiDist.textContent = dist.toFixed(2) + ' м';
                 uiHint.textContent = finishPoint ? "Кликните чтобы сбросить" : "Укажите точку финиша";
 
-                // Удобная фича: подставляем измеренную дистанцию в калькулятор темпа
-                if (finishPoint && dist > 0) {
-                    iDist.value = Math.round(dist);
-                    calculatePace();
-                }
+                if (finishPoint && dist > 0) { iDist.value = Math.round(dist); calculatePace(); }
 
                 if (startPoint.d < 0 || endD < 0) {
                     const sChute = Math.min(0, startPoint.d), eChute = Math.min(0, endD);
                     if (sChute !== eChute) {
                         const p1 = getPos(tObj, sChute), p2 = getPos(tObj, eChute);
-                        hlChute.setAttribute('x1', p1.px); hlChute.setAttribute('y1', p1.py);
-                        hlChute.setAttribute('x2', p2.px); hlChute.setAttribute('y2', p2.py);
-                        hlChute.setAttribute('opacity', 1);
+                        hlChute.setAttribute('x1', p1.px); hlChute.setAttribute('y1', p1.py); hlChute.setAttribute('x2', p2.px); hlChute.setAttribute('y2', p2.py); hlChute.setAttribute('opacity', 1);
                     } else hlChute.setAttribute('opacity', 0);
                 } else hlChute.setAttribute('opacity', 0);
 
                 const ovalStartD = Math.max(0, startPoint.d), ovalEndD = Math.max(0, endD);
-
                 if (ovalStartD !== ovalEndD || dist >= tObj.lTotal - 0.1) {
-                    const startVis = (ovalStartD / tObj.lTotal) * tObj.visTotal;
-                    let len;
+                    const startVis = (ovalStartD / tObj.lTotal) * tObj.visTotal; let len;
                     if (dist >= tObj.lTotal - 0.1) len = tObj.visTotal; 
-                    else {
-                        len = ((ovalEndD / tObj.lTotal) * tObj.visTotal) - startVis;
-                        if (len < 0) len += tObj.visTotal;
-                    }
-
+                    else { len = ((ovalEndD / tObj.lTotal) * tObj.visTotal) - startVis; if (len < 0) len += tObj.visTotal; }
                     const pathStr = getTrackPath(36.50 + lane * VIS_LANE_W + VIS_LANE_W / 2);
                     highlight1.setAttribute('d', pathStr); highlight1.setAttribute('stroke-dasharray', `${len} 999999`); highlight1.setAttribute('stroke-dashoffset', `-${startVis}`);
-                    
-                    if (startVis + len > tObj.visTotal) {
-                        highlight2.setAttribute('d', pathStr); highlight2.setAttribute('stroke-dasharray', `${(startVis + len) - tObj.visTotal} 999999`); highlight2.setAttribute('stroke-dashoffset', `0`);
-                    } else highlight2.setAttribute('stroke-dasharray', `0 999999`);
+                    if (startVis + len > tObj.visTotal) { highlight2.setAttribute('d', pathStr); highlight2.setAttribute('stroke-dasharray', `${(startVis + len) - tObj.visTotal} 999999`); highlight2.setAttribute('stroke-dashoffset', `0`); } 
+                    else highlight2.setAttribute('stroke-dasharray', `0 999999`);
                 } else { highlight1.setAttribute('stroke-dasharray', `0 999999`); highlight2.setAttribute('stroke-dasharray', `0 999999`); }
-
             } else {
-                uiDist.textContent = '0.00 м'; uiHint.textContent = activeHover ? `Дорожка ${activeHover.lane + 1}. Кликните для старта` : 'Наведите на дорожку';
-                hlChute.setAttribute('opacity', 0); highlight1.setAttribute('stroke-dasharray', `0 999999`); highlight2.setAttribute('stroke-dasharray', `0 999999`);
+                uiDist.textContent = '0.00 м'; uiHint.textContent = 'Тапните на дорожку'; hlChute.setAttribute('opacity', 0); highlight1.setAttribute('stroke-dasharray', `0 999999`); highlight2.setAttribute('stroke-dasharray', `0 999999`);
             }
         }
 
-        buildTrack(VIS_LANE_W);
+        // Первичная инициализация
+        buildTrack(currentSliderValue);
+
+        // Перерисовка стадиона при изменении размера окна (или повороте телефона)
+        window.addEventListener('resize', () => {
+            buildTrack(currentSliderValue);
+        });
 
         const slider = document.getElementById('width-slider'), sliderVal = document.getElementById('width-val');
-        slider.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value); sliderVal.textContent = val.toFixed(1); buildTrack(val);
-        });
+        slider.addEventListener('input', (e) => { const val = parseFloat(e.target.value); sliderVal.textContent = val.toFixed(1); buildTrack(val); });
 
         svg.addEventListener('mousemove', (e) => {
             activeHover = getMouseData(e);
             if (startPoint && !finishPoint && activeHover) {
-                let currentDist = activeHover.d - startPoint.d;
-                while (currentDist < 0) currentDist += tracksData[startPoint.lane].lTotal;
+                let currentDist = activeHover.d - startPoint.d; while (currentDist < 0) currentDist += tracksData[startPoint.lane].lTotal;
                 if (currentDist > 15 && currentDist < tracksData[startPoint.lane].lTotal - 15) hasMovedAway = true;
             }
-            if (activeHover && activeHover.snappedMark && !finishPoint) {
-                tooltip.style.opacity = 1; tooltip.style.left = e.clientX + 'px'; tooltip.style.top = (e.clientY - 15) + 'px'; tooltip.textContent = `Стандарт: ${activeHover.snappedMark}`;
-            } else tooltip.style.opacity = 0;
+            if (activeHover && activeHover.snappedMark && !finishPoint) { tooltip.style.opacity = 1; tooltip.style.left = e.clientX + 'px'; tooltip.style.top = (e.clientY - 15) + 'px'; tooltip.textContent = `Стандарт: ${activeHover.snappedMark}`; } 
+            else tooltip.style.opacity = 0;
             updateUI();
         });
-
         svg.addEventListener('mouseleave', () => { activeHover = null; tooltip.style.opacity = 0; updateUI(); });
 
-        svg.addEventListener('click', () => {
-            if (!activeHover && lockedLane === null) return;
-            if (!startPoint) { startPoint = { ...activeHover }; lockedLane = startPoint.lane; hasMovedAway = false; }
-            else if (!finishPoint) { finishPoint = { ...activeHover }; }
+        svg.addEventListener('click', (e) => {
+            const clickData = getMouseData(e); 
+            const targetData = clickData || activeHover;
+
+            if (!targetData && lockedLane === null) return;
+            
+            if (!startPoint) { startPoint = { ...targetData }; lockedLane = startPoint.lane; hasMovedAway = false; }
+            else if (!finishPoint) { finishPoint = { ...targetData }; }
             else {
                 startPoint = null; finishPoint = null; lockedLane = null; hasMovedAway = false;
-                if (activeHover) { startPoint = { ...activeHover }; lockedLane = startPoint.lane; }
+                if (targetData) { startPoint = { ...targetData }; lockedLane = startPoint.lane; }
             }
             tooltip.style.opacity = 0; updateUI();
         });
